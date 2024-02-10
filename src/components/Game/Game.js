@@ -270,7 +270,7 @@ function Game() {
         <div>Время: {time}</div>
         <div>Общее количество мин: {getBombCountByDifficulty(difficulty) - flagCount}</div>
       </div>
-      <div className="board">
+      <div className={`board board-${getSizeByDifficulty(difficulty)}`}>
         {board.map((row, rowIndex) => (
           <div key={rowIndex} className='row'>
             {row.map((cell, cellIndex) => (
@@ -290,13 +290,18 @@ function Game() {
         ))}
       </div>
       <div className='buttons'>
-        {(gameOver || win) && <button onClick={startNewGame}>Новая игра</button>}
-        {(!gameOver && !win) && <button onClick={startNewGame}>Начать заново</button>}
+        <button onClick={startNewGame}>Начать заново</button>
         <button onClick={handleDifficultySelection}>Выбор сложности</button>
       </div>
-      {gameOver && <div>Игра окончена!</div>}
-      {win && <div>Вы выиграли!</div>}
-    </div>
+      {(gameOver || win) && 
+      <div className='end-game'>
+        <div className='end-game-content'>
+          {gameOver && <div>Игра окончена!</div>}
+          {win && <div>Вы выиграли!</div>}
+          <button onClick={startNewGame}>Новая игра</button>
+        </div>
+      </div>}
+    </div >
   );
 }
 

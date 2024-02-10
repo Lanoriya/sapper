@@ -1,6 +1,7 @@
 * {
   margin: 0;
   padding: 0;
+  text-align: center;
   font-family:Verdana, Geneva, Tahoma, sans-serif;  
 }
 
@@ -15,7 +16,7 @@
 
 .settings::before {
   content: '';
-  background-image: url(../imgs/sapper.png);
+  background-image: url(../imgs/game-bg.jpg);
   opacity: 0.25;
   background-repeat: no-repeat;
   width: 100%;
