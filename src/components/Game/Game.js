@@ -90,16 +90,31 @@ function Game() {
     return newBoard;
   };
   
-  const placeBombs = (emptyBoard) => {
+  const placeBombs = (currentBoard, firstClickRowIndex, firstClickCellIndex) => {
     const bombCount = getBombCountByDifficulty(difficulty);
     const size = getSizeByDifficulty(difficulty);
+  
+    const excludedCells = new Set(); // Хранение индексов клеток, которые нужно исключить из выбора для размещения мин
+    // Исключить клетку первого клика из возможных местоположений для бомб
+    excludedCells.add(`${firstClickRowIndex}-${firstClickCellIndex}`);
+  
+    // Создать копию текущего состояния поля
+    const newBoard = [...currentBoard];
+  
     for (let i = 0; i < bombCount; i++) {
-      let x = Math.floor(Math.random() * size);
-      let y = Math.floor(Math.random() * size);
-      emptyBoard[x][y].isBomb = true;
+      let x, y;
+      do {
+        x = Math.floor(Math.random() * size);
+        y = Math.floor(Math.random() * size);
+      } while (excludedCells.has(`${x}-${y}`)); // Повторять выбор, пока не будет выбрана клетка, которая не была исключена
+  
+      // Обновить клетку на новом поле, устанавливая бомбу
+      newBoard[x][y].isBomb = true;
     }
-    return emptyBoard;
+  
+    return newBoard;
   };
+  
 
   const countAdjacentBombs = (rowIndex, cellIndex) => {
     let count = 0;
@@ -150,6 +165,11 @@ function Game() {
     const cell = board[rowIndex][cellIndex]
 
     if (!gameOver && !win) {
+      if (score === 0 && !cell.isBomb) {
+        const boardWithBombs = placeBombs(board, rowIndex, cellIndex);
+        setBoard(boardWithBombs);
+      }
+
       if (cell.isOpen) {
         return; // Игнорировать повторное нажатие, если клетка уже открыта
       }
@@ -247,8 +267,7 @@ function Game() {
     setWin(false);
     setGameOver(false);
     const emptyBoard = createEmptyBoard();
-    const boardBombs = placeBombs(emptyBoard)
-    setBoard(boardBombs);
+    setBoard(emptyBoard);
   };
 
   useEffect(() => {
