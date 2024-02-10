@@ -1,0 +1,45 @@
+@media (max-width: 768px) {
+	.score {
+		margin-top: 16px;
+		flex-direction: column;
+	}
+}
+
+@media (max-width: 1023px) {
+	/* .cell {
+		display: flex;
+		width: 80px;
+		height: 80px;
+	} */
+}
+
+@media (min-width: 1024px) {
+	.board {
+		width: 100%;
+		height: 100%;
+		overflow: auto;
+	}
+
+	/* .cell {
+		display: flex;
+		width: 8vw;
+		height: 8vw;
+	} */
+
+	.cell > * {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		width: 100%;
+		height: 100%;
+		font-size: 40px;
+	}
+
+	.cell-bomb {
+
+	}
+
+	.cell-clear {
+
+	}
+}
