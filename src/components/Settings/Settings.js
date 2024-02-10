@@ -73,6 +73,11 @@ function Settings() {
       setMinesCount(updatedMinesCount); // Обновляем состояние
     }
 
+    if (minesCount > 1000) {
+      updatedMinesCount = 1000;
+      setMinesCount(updatedMinesCount)
+    }
+
     navigate(`/game?difficulty=${newSize}&bombCount=${updatedMinesCount}`);
   };
 
@@ -88,10 +93,10 @@ function Settings() {
         </select>
         {customSize && (
           <div className='custom'>
-            <label htmlFor="mines-count">Введите размер поля:</label>
+            <label htmlFor="mines-count">Введите размер поля (max 100x100):</label>
             <input type="number" min="3" max="100" value={boardSize} onChange={handleCustomSizeChange} />
-            <label htmlFor="mines-count">Введите количество мин:</label>
-            <input type="number" id="mines-count" min="1" max='960' value={minesCount} onChange={handleMinesChange} />
+            <label htmlFor="mines-count">Введите количество мин (max 1000):</label>
+            <input type="number" id="mines-count" min="1" max='1000' value={minesCount} onChange={handleMinesChange} />
           </div>
         )}
         <button onClick={handleStartGame}>Начать игру</button>
