@@ -1,5 +1,6 @@
 @media (max-width: 768px) {
 	.settings-container {
+		top: 5%;
 		padding: 32px 32px 200px;
 		margin: 0px 16px;
 	}

@@ -8,8 +8,6 @@ function Game() {
   const initialBombCount = new URLSearchParams(location.search).get('bombCount') || 10;
   const navigate = useNavigate();
 
-  const [difficulty, setDifficulty] = useState(parseInt(initialDifficulty));
-  const [bombCount, setBombCount] = useState(parseInt(initialBombCount));
   const [board, setBoard] = useState([]);
   const [score, setScore] = useState(0);
   const [gameOver, setGameOver] = useState(false);
@@ -19,33 +17,11 @@ function Game() {
 
   useEffect(() => {
     startNewGame();
-  }, [difficulty, bombCount]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [initialDifficulty, initialBombCount]);
 
   const handleDifficultySelection = () => {
     navigate('/');
-  };
-
-  const handleDifficultyChange = (newDifficulty) => {
-    setDifficulty(newDifficulty);
-  };
-
-  const getBombCountByDifficulty = (difficulty) => {
-    switch (difficulty) {
-      case 8:
-        return 10;
-      case 16:
-        return 40;
-      case 32:
-        return 100;
-      case +initialDifficulty:
-        return +initialBombCount;
-      default:
-        return 10;
-    }
-  };
-
-  const getSizeByDifficulty = (difficulty) => {
-    return difficulty;
   };
 
   const getColorClass = (adjacentBombs) => {
@@ -73,10 +49,9 @@ function Game() {
 
   const createEmptyBoard = () => {
     const newBoard = [];
-    const size = getSizeByDifficulty(difficulty);
-    for (let i = 0; i < size; i++) {
+    for (let i = 0; i < initialDifficulty; i++) {
       const newRow = [];
-      for (let j = 0; j < size; j++) {
+      for (let j = 0; j < initialDifficulty; j++) {
         newRow.push({ isBomb: false, isOpen: false, isFlagged: false, isQuestion: false, adjacentBombs: 0, });
       }
       newBoard.push(newRow);
@@ -86,8 +61,6 @@ function Game() {
   };
   
   const placeBombs = (currentBoard, firstClickRowIndex, firstClickCellIndex) => {
-    const size = getSizeByDifficulty(difficulty);
-  
     const excludedCells = new Set(); // Хранение индексов клеток, которые нужно исключить из выбора для размещения мин
     // Исключить клетку первого клика из возможных местоположений для бомб
     excludedCells.add(`${firstClickRowIndex}-${firstClickCellIndex}`);
@@ -95,11 +68,11 @@ function Game() {
     // Создать копию текущего состояния поля
     const newBoard = [...currentBoard];
   
-    for (let i = 0; i < bombCount; i++) {
+    for (let i = 0; i < initialBombCount; i++) {
       let x, y;
       do {
-        x = Math.floor(Math.random() * size);
-        y = Math.floor(Math.random() * size);
+        x = Math.floor(Math.random() * initialDifficulty);
+        y = Math.floor(Math.random() * initialDifficulty);
       } while (excludedCells.has(`${x}-${y}`)); // Повторять выбор, пока не будет выбрана клетка, которая не была исключена
   
       // Обновить клетку на новом поле, устанавливая бомбу
@@ -112,9 +85,8 @@ function Game() {
 
   const countAdjacentBombs = (rowIndex, cellIndex) => {
     let count = 0;
-    const size = getSizeByDifficulty(difficulty);
     const minIndex = 0;
-    const maxIndex = size - 1;
+    const maxIndex = initialDifficulty - 1;
     
     for (let i = Math.max(minIndex, rowIndex - 1); i <= Math.min(rowIndex + 1, maxIndex); i++) {
       for (let j = Math.max(minIndex, cellIndex - 1); j <= Math.min(cellIndex + 1, maxIndex); j++) {
@@ -139,12 +111,9 @@ function Game() {
   };
 
   const checkWin = () => {
-    const size = getSizeByDifficulty(difficulty);
-    const bombCount = getBombCountByDifficulty(difficulty);
-
     let countOpen = 0;
-    for (let i = 0; i < size; i++) {
-      for (let j = 0; j < size; j++) {
+    for (let i = 0; i < initialDifficulty; i++) {
+      for (let j = 0; j < initialDifficulty; j++) {
         if (board[i][j].isOpen) {
           countOpen++;
         }
@@ -152,7 +121,7 @@ function Game() {
     }
     setScore(countOpen * 10);
     
-    if (countOpen === (size * size - bombCount)) {
+    if (countOpen === (initialDifficulty * initialDifficulty - initialBombCount)) {
       setWin(true);
     }
   }
@@ -185,9 +154,8 @@ function Game() {
   };
 
   const openAdjacentCells = (rowIndex, cellIndex, newBoard) => {
-    const size = getSizeByDifficulty(difficulty);
     const minIndex = 0;
-    const maxIndex = size - 1;
+    const maxIndex = initialDifficulty - 1;
 
     if (rowIndex < minIndex || rowIndex > maxIndex || cellIndex < minIndex || cellIndex > maxIndex || newBoard[rowIndex][cellIndex].isOpen || board[rowIndex][cellIndex].isFlagged || board[rowIndex][cellIndex].isQuestion) {
       return;
@@ -240,7 +208,7 @@ function Game() {
     const newBoard = [...board]
     const cell = newBoard[rowIndex][cellIndex];
 
-    if (flagCount === bombCount && !isFlagged) {
+    if (flagCount === initialBombCount && !isFlagged) {
       return '';
     }
 
@@ -285,9 +253,9 @@ function Game() {
       <div className='score'>
         <div>Счёт: {score}</div>
         <div>Время: {time}</div>
-        <div>Общее количество мин: {bombCount - flagCount}</div>
+        <div>Общее количество мин: {initialBombCount - flagCount}</div>
       </div>
-      <div className={`board board-${getSizeByDifficulty(difficulty)}`}>
+      <div className={`board board-${initialDifficulty}`}>
         {board.map((row, rowIndex) => (
           <div key={rowIndex} className='row'>
             {row.map((cell, cellIndex) => (

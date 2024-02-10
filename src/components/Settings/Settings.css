@@ -46,3 +46,12 @@
   border: none;
   font-size: 24px;
 }
+
+.custom {
+  display: flex;
+  flex-direction: column;
+}
+
+.custom label {
+  font-size: 20px;
+}
