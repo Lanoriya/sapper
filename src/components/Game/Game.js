@@ -271,9 +271,14 @@ function Game() {
   };
 
   const updateLeaderboard = (currentTime) => {
-    const isBrokeRecord = leaderboard.some(entry => entry.time > currentTime.time);
+    if (currentTime.name.trim() === "") {
+      return; // Если имя игрока пустое, не добавляем запись в таблицу лидеров
+    }
   
-    if (isBrokeRecord || leaderboard.length < 10) {
+    const isBrokeRecord = leaderboard.some(entry => entry.time > currentTime.time);
+    const isDuplicateRecord = leaderboard.some(entry => entry.time === currentTime.time && entry.name === currentTime.name);
+    
+    if ((isBrokeRecord || leaderboard.length < 10) && !isDuplicateRecord) {
       const updatedLeaderboard = [...leaderboard, currentTime];
       updatedLeaderboard.sort((a, b) => a.time - b.time);
       const trimmedLeaderboard = updatedLeaderboard.slice(0, 10);
@@ -286,13 +291,7 @@ function Game() {
     if (win) {
       setCurrentTime(time);
     }
-  }, [win, time]);
-
-  useEffect(() => {
-    if (win && currentTime !== null) {
-      updateLeaderboard({ name, time: currentTime });
-    }
-  }, [win, currentTime]);
+  }, [win, currentTime, time]);
 
   useEffect(() => {
     const intervalId = setInterval(() => {
