@@ -10,7 +10,7 @@ function App() {
   return (
     <RecoilRoot>
       <Routes>
-        <Route path="/" element={<Settings />} />
+        <Route exact path="/" element={<Settings />} />
         <Route path="/game" element={<Game />} />
         <Route path="/leaderboard" element={<Leaderboard />} />
       </Routes>
