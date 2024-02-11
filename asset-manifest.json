@@ -1,14 +1,14 @@
 {
   "files": {
     "main.css": "/sapper/static/css/main.4e451999.css",
-    "main.js": "/sapper/static/js/main.d97a8f59.js",
+    "main.js": "/sapper/static/js/main.0f8cf9b0.js",
     "static/media/game-bg.jpg": "/sapper/static/media/game-bg.668a61f2251ed18ce5a4.jpg",
     "index.html": "/sapper/index.html",
     "main.4e451999.css.map": "/sapper/static/css/main.4e451999.css.map",
-    "main.d97a8f59.js.map": "/sapper/static/js/main.d97a8f59.js.map"
+    "main.0f8cf9b0.js.map": "/sapper/static/js/main.0f8cf9b0.js.map"
   },
   "entrypoints": [
     "static/css/main.4e451999.css",
-    "static/js/main.d97a8f59.js"
+    "static/js/main.0f8cf9b0.js"
   ]
 }
