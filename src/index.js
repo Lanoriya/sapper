@@ -7,7 +7,7 @@ const basename = '/sapper/';
 
 ReactDOM.render(
   <React.StrictMode>
-    <Router>
+    <Router basename={basename}>
       <App />
     </Router>
   </React.StrictMode>,
