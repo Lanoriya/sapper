@@ -70,10 +70,11 @@ function Settings() {
     let updatedMinesCount = minesCount;
     if (minesCount > 1000) {
       updatedMinesCount = 1000;
-      if (updatedMinesCount > (newSize * newSize - 1)) {
-        updatedMinesCount = 1;
-      }
-      setMinesCount(updatedMinesCount)
+      setMinesCount(updatedMinesCount);
+    }
+    if (updatedMinesCount > (newSize * newSize - 1)) {
+      updatedMinesCount = 1;
+      setMinesCount(updatedMinesCount);
     }
 
     navigate(`/game?difficulty=${newSize}&bombCount=${updatedMinesCount}`);

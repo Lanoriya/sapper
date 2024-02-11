@@ -5,6 +5,16 @@
   font-family:Verdana, Geneva, Tahoma, sans-serif;  
 }
 
+.game::before {
+  content: '';
+  position: absolute;
+  background-image: url(../imgs/game-bg.jpg);
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  z-index: -1;
+}
+
 .settings {
   position: relative;
   display: flex;

@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { useRecoilState } from 'recoil';
+import { leaderboardState } from '../recoil/atoms';
 import './Game.css';
 
 function Game() {
   const location = useLocation();
+  const navigate = useNavigate();
   const initialDifficulty = new URLSearchParams(location.search).get('difficulty') || 8;
   const initialBombCount = new URLSearchParams(location.search).get('bombCount') || 10;
-  const navigate = useNavigate();
+  const [leaderboard, setLeaderboard] = useRecoilState(leaderboardState);
 
   const [board, setBoard] = useState([]);
   const [score, setScore] = useState(0);
@@ -15,6 +18,8 @@ function Game() {
   const [flagCount, setFlagCount] = useState(0);
   // eslint-disable-next-line
   const [correctFlagCount, setCorrectFlagCount] = useState(0);
+  const [currentTime, setCurrentTime] = useState(null);
+  const [name, setName] = useState('');
   const [win, setWin] = useState(false);
 
   useEffect(() => {
@@ -24,6 +29,10 @@ function Game() {
 
   const handleDifficultySelection = () => {
     navigate('/');
+  };
+
+  const leaderBoardLink = () => {
+    navigate('/leaderboard');
   };
 
   const getColorClass = (adjacentBombs) => {
@@ -61,35 +70,35 @@ function Game() {
     setBoard(newBoard);
     return newBoard;
   };
-  
+
   const placeBombs = (currentBoard, firstClickRowIndex, firstClickCellIndex) => {
     const excludedCells = new Set(); // Хранение индексов клеток, которые нужно исключить из выбора для размещения мин
     // Исключить клетку первого клика из возможных местоположений для бомб
     excludedCells.add(`${firstClickRowIndex}-${firstClickCellIndex}`);
-  
+
     // Создать копию текущего состояния поля
     const newBoard = [...currentBoard];
-  
+
     for (let i = 0; i < initialBombCount; i++) {
       let x, y;
       do {
         x = Math.floor(Math.random() * initialDifficulty);
         y = Math.floor(Math.random() * initialDifficulty);
       } while (excludedCells.has(`${x}-${y}`)); // Повторять выбор, пока не будет выбрана клетка, которая не была исключена
-  
+
       // Обновить клетку на новом поле, устанавливая бомбу
       newBoard[x][y].isBomb = true;
     }
-  
+
     return newBoard;
   };
-  
+
 
   const countAdjacentBombs = (rowIndex, cellIndex) => {
     let count = 0;
     const minIndex = 0;
     const maxIndex = initialDifficulty - 1;
-    
+
     for (let i = Math.max(minIndex, rowIndex - 1); i <= Math.min(rowIndex + 1, maxIndex); i++) {
       for (let j = Math.max(minIndex, cellIndex - 1); j <= Math.min(cellIndex + 1, maxIndex); j++) {
         if (board[i][j].isBomb) {
@@ -122,7 +131,7 @@ function Game() {
       }
     }
     setScore(countOpen * 10);
-    
+
     if (countOpen === (initialDifficulty * initialDifficulty - initialBombCount)) {
       setWin(true);
     }
@@ -261,15 +270,39 @@ function Game() {
     setBoard(emptyBoard);
   };
 
+  const updateLeaderboard = (currentTime) => {
+    const isBrokeRecord = leaderboard.some(entry => entry.time > currentTime.time);
+  
+    if (isBrokeRecord || leaderboard.length < 10) {
+      const updatedLeaderboard = [...leaderboard, currentTime];
+      updatedLeaderboard.sort((a, b) => a.time - b.time);
+      const trimmedLeaderboard = updatedLeaderboard.slice(0, 10);
+      setLeaderboard(trimmedLeaderboard);
+      localStorage.setItem('leaderboard', JSON.stringify(trimmedLeaderboard));
+    }
+  };
+
+  useEffect(() => {
+    if (win) {
+      setCurrentTime(time);
+    }
+  }, [win, time]);
+
+  useEffect(() => {
+    if (win && currentTime !== null) {
+      updateLeaderboard({ name, time: currentTime });
+    }
+  }, [win, currentTime]);
+
   useEffect(() => {
     const intervalId = setInterval(() => {
       setTime((prevCount) => prevCount + 1);
     }, 1000);
-    
+
     if (win || gameOver) {
       clearInterval(intervalId)
     }
-    
+
     return () => clearInterval(intervalId);
   }, [win, gameOver]);
 
@@ -302,15 +335,30 @@ function Game() {
       <div className='buttons'>
         <button onClick={startNewGame}>Начать заново</button>
         <button onClick={handleDifficultySelection}>Выбор сложности</button>
+        <button onClick={leaderBoardLink}>Таблица лидеров</button>
       </div>
-      {(gameOver || win) && 
-      <div className='end-game'>
-        <div className='end-game-content'>
-          {gameOver && <div>Игра окончена!</div>}
-          {win && <div>Вы выиграли!</div>}
-          <button onClick={startNewGame}>Новая игра</button>
-        </div>
-      </div>}
+      {(gameOver || win) &&
+        <div className='end-game'>
+          <div className='end-game-content'>
+            {gameOver &&
+            <div>
+              <h5>Игра окончена!</h5>
+              <button onClick={startNewGame}>Новая игра</button>
+            </div>}
+            {win && <div>Вы выиграли!</div>}
+            {win &&
+              <div className='win-about'>
+                <h5>Введите ваше имя</h5>
+                <input
+                  type="text"
+                  value={name}
+                  onChange={e => setName(e.target.value)}
+                />
+                <button onClick={() => { updateLeaderboard({ name: name, time: currentTime }); startNewGame(); }}>Сохранить имя</button>
+              </div>
+            }
+          </div>
+        </div>}
     </div >
   );
 }

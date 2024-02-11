@@ -5,7 +5,7 @@
 		margin: 0px 16px;
 	}
 	
-	.game::before, .settings::before {
+	.game::before, .settings::before, .leaderboard::before {
 		background-position: 75%;
 	}
 
@@ -27,7 +27,7 @@
 }
 
 @media (min-width: 1024px) {
-	.game::before {
+	.game::before, .settings::before .leaderboard::before {
 		background-position: 55%;
 	}
 }
