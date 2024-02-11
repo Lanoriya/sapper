@@ -18,6 +18,7 @@ function Game() {
   const [flagCount, setFlagCount] = useState(0);
   // eslint-disable-next-line
   const [correctFlagCount, setCorrectFlagCount] = useState(0);
+  const [leaderboardUpdated, setLeaderboardUpdated] = useState(false);
   const [currentTime, setCurrentTime] = useState(null);
   const [name, setName] = useState('');
   const [win, setWin] = useState(false);
@@ -288,10 +289,12 @@ function Game() {
   };
 
   useEffect(() => {
-    if (win) {
+    if (win && !leaderboardUpdated) {
       setCurrentTime(time);
+      updateLeaderboard({ name, time: currentTime });
+      setLeaderboardUpdated(true);
     }
-  }, [win, currentTime, time]);
+  }, [win, currentTime, time, leaderboardUpdated]);
 
   useEffect(() => {
     const intervalId = setInterval(() => {
