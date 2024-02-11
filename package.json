@@ -1,5 +1,6 @@
 {
   "name": "sapper-by-jester",
+  "homepage": "https://lanoriya.github.io/sapper/",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -13,13 +14,13 @@
     "recoil": "^0.7.7",
     "web-vitals": "^2.1.4"
   },
-  "homepage": "https://lanoriya.github.io/sapper",
   "scripts": {
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build"
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "deploy": "npm run build && gh-pages -d build"
   },
   "eslintConfig": {
     "extends": [
