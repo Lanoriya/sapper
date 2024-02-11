@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import { BrowserRouter as Router } from 'react-router-dom';
 import App from './App';
 
-const basename = '/sapper';
+const basename = '/sapper/';
 
 ReactDOM.render(
   <React.StrictMode>
