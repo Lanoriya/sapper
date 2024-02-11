@@ -68,13 +68,11 @@ function Settings() {
     }
 
     let updatedMinesCount = minesCount;
-    if (minesCount > (newSize * newSize) - 1) {
-      updatedMinesCount = 1; // Обновляем количество мин, если оно больше максимально допустимого значения
-      setMinesCount(updatedMinesCount); // Обновляем состояние
-    }
-
     if (minesCount > 1000) {
       updatedMinesCount = 1000;
+      if (updatedMinesCount > (newSize * newSize - 1)) {
+        updatedMinesCount = 1;
+      }
       setMinesCount(updatedMinesCount)
     }
 

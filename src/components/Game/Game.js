@@ -13,6 +13,8 @@ function Game() {
   const [gameOver, setGameOver] = useState(false);
   const [time, setTime] = useState(0);
   const [flagCount, setFlagCount] = useState(0);
+  // eslint-disable-next-line
+  const [correctFlagCount, setCorrectFlagCount] = useState(0);
   const [win, setWin] = useState(false);
 
   useEffect(() => {
@@ -129,7 +131,7 @@ function Game() {
   const handleClick = (rowIndex, cellIndex) => {
     const cell = board[rowIndex][cellIndex]
 
-    if (!gameOver && !win) {
+    if (!gameOver && !win && !cell.isFlagged && !cell.isQuestion) {
       if (score === 0 && !cell.isBomb) {
         const boardWithBombs = placeBombs(board, rowIndex, cellIndex);
         setBoard(boardWithBombs);
@@ -139,9 +141,7 @@ function Game() {
         return; // Игнорировать повторное нажатие, если клетка уже открыта
       }
 
-      if (!cell.isFlagged && !cell.isQuestion) {
-        openCell(rowIndex, cellIndex)
-      }
+      openCell(rowIndex, cellIndex)
 
       if (cell.isBomb) {
         setGameOver(true)
@@ -208,21 +208,46 @@ function Game() {
     const newBoard = [...board]
     const cell = newBoard[rowIndex][cellIndex];
 
-    if (flagCount === initialBombCount && !isFlagged) {
+    if (flagCount === +initialBombCount && !isFlagged) {
       return '';
     }
 
     if (!isFlagged && !isQuestion) {
       setFlagCount(prevCount => prevCount + 1);
       cell.isFlagged = true;
+
+      if (cell.isBomb) {
+        setCorrectFlagCount(prevCount => prevCount + 1);
+      }
+
     } else if (isFlagged && !isQuestion) {
       setFlagCount(prevCount => prevCount - 1);
       cell.isFlagged = false;
+
+      if (cell.isBomb) {
+        setCorrectFlagCount(prevCount => prevCount - 1);
+      }
+
       cell.isQuestion = true;
     } else {
       cell.isQuestion = false;
       cell.isFlagged = false;
     }
+
+    let correctFlags = 0;
+    newBoard.forEach(row => {
+      row.forEach(cell => {
+        if (cell.isFlagged && cell.isBomb) {
+          correctFlags++;
+        }
+      });
+    });
+    setCorrectFlagCount(correctFlags);
+
+    if (correctFlags === (+initialBombCount)) {
+      setWin(true);
+    }
+
     setBoard(newBoard);
   }
 
