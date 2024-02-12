@@ -1,4 +1,4 @@
-lanoriya.github.io/sapper/
+[Ссылка на игру](https://lanoriya.github.io/sapper/)
 
 ## Сапёр
 
