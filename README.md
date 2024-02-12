@@ -1,4 +1,4 @@
-#lanoriya.github.io/sapper/
+lanoriya.github.io/sapper/
 
 ## Сапёр
 
